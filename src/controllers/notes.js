@@ -93,11 +93,11 @@ module.exports.create = (req, res, next) => {
 
 module.exports.update = (req, res, next) => {
   const id = req.params.noteId;
-  const updateOps = {};
-  for (const ops of req.body) {
-    updateOps[ops.propName] = ops.value;
-  }
-  Note.update({ _id: id, userId: req.userData.userId }, { $set: updateOps })
+  // const updateOps = {};
+  // for (const ops in req.body) {
+  //   updateOps[ops.propName] = ops.value;
+  // }
+  Note.findOneAndUpdate({ _id: id, userId: req.userData.userId }, req.body, { new: true })
     .exec()
     .then(result => {
       console.log(result);
