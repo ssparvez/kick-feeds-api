@@ -9,7 +9,10 @@ const userSchema = mongoose.Schema({
     // email regex
     match: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   },
+  isVerified: { type: Boolean, default: false },
   password: { type: String, required: true },
+  passwordResetToken: String,
+  passwordResetExpires: Date
 });
 
 module.exports = mongoose.model('User', userSchema);
