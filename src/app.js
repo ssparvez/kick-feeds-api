@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 
 const noteRoutes = require("./routes/notes");
 const userRoutes = require("./routes/users");
+const tagRoutes = require("./routes/tags");
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use((req, res, next) => {
 // Routes which should handle requests
 app.use("/notes", noteRoutes);
 app.use("/users", userRoutes);
+app.use("/tags", tagRoutes);
 
 // error handling
 app.use((req, res, next) => { // create 404 error and forward to next handler
