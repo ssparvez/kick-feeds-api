@@ -8,10 +8,10 @@ router.get("/", checkAuth, TagsController.getAll);
 
 router.post("/", checkAuth, TagsController.create);
 
-// router.get("/:tagId", checkAuth, NotesController.getSpecific);
+router.get("/:tagId", checkAuth, TagsController.getOne);
 
-// router.patch("/:tagId", checkAuth, NotesController.update);
+router.patch("/:tagId", checkAuth, TagsController.update);
 
-// router.delete("/:tagId", checkAuth, NotesController.delete);
+router.delete("/:tagId", checkAuth, TagsController.delete);
 
 module.exports = router;

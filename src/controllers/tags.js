@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const Tag = require("../models/tag");
+const Tag = require('../models/tag');
+const Note = require('../models/note');
 
 module.exports.getAll = (req, res, next) => {
   console.log('what is req user data', req.userData);
@@ -13,11 +14,7 @@ module.exports.getAll = (req, res, next) => {
           console.log('whats in the doc');
           console.log(doc);
           return {
-            name: doc.name,
-            description: doc.description,
-            color: doc.color,
-            userId: doc.userId,
-            _id: doc._id,
+            ...doc._doc,
             request: { type: 'GET', url: 'http://localhost:5000/tags' + doc._id }
           }
         })
@@ -31,13 +28,29 @@ module.exports.getAll = (req, res, next) => {
       //       });
       //   }
     })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err
-      });
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ error });
     });
 };
+
+module.exports.getOne = (req, res, next) => {
+  const id = req.params.tagId;
+  Tag.findOne({ _id: id, userId: req.userData.userId })
+    .exec()
+    .then(doc => {
+      console.log("From database", doc);
+      if (doc) {
+        res.status(200).json(doc);
+      } else {
+        res.status(404).json({ message: "No valid entry found for provided ID" });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ error: err });
+    });
+}
 
 module.exports.create = (req, res, next) => {
   console.log('hwhat os ')
@@ -55,19 +68,49 @@ module.exports.create = (req, res, next) => {
       res.status(201).json({ // prepare response
         message: "Handling POST requests to /tags",
         createdTag: {
-          name: doc.name,
-          description: doc.description,
-          color: doc.color,
-          userId: doc.userId,
-          _id: doc._id,
+          ...doc._doc,
           request: { type: 'GET', url: 'http://localhost:5000/tags' + doc._id }
         }
       });
     })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err
-      });
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ error });
+    });
+};
+
+module.exports.update = (req, res, next) => {
+  const id = req.params.tagId;
+
+  Tag.findOneAndUpdate({ _id: id, userId: req.userData.userId }, req.body, { new: true })
+    .exec()
+    .then(result => {
+      console.log(result);
+      res.status(200).json(result);
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ error });
+    });
+};
+
+module.exports.delete = (req, res, next) => {
+  const id = req.params.tagId;
+  Tag.deleteOne({ _id: id, userId: req.userData.userId })
+    .exec()
+    .then(result => {
+      // update all notes with associated tag?
+      Note.updateMany({ tagId: id }, { tagId: null })
+        .exec()
+        .then(() => {
+          res.status(200).json(result);
+        })
+        .catch(error => {
+          res.status(500).json({ error });
+        })
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({ error });
     });
 };
