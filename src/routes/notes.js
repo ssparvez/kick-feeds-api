@@ -8,7 +8,7 @@ router.get("/", checkAuth, NotesController.getAll);
 
 router.post("/", checkAuth, NotesController.create);
 
-router.get("/:noteId", checkAuth, NotesController.getSpecific);
+router.get("/:noteId", checkAuth, NotesController.getOne);
 
 router.patch("/:noteId", checkAuth, NotesController.update);
 
