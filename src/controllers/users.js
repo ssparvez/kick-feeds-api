@@ -62,7 +62,6 @@ module.exports.signUp = (req, res, next) => {
               res.status(201).json({ message: 'User created' })
             })
             .catch(err => {
-              console.log(err);
               res.status(500).json({ error: err });
             })
         });
