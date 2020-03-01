@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 const sgMail = require('@sendgrid/mail');
 const crypto = require("crypto");
 
-
 const User = require("../models/user");
 const VerificationToken = require("../models/verificationToken");
 
@@ -41,11 +40,10 @@ module.exports.signUp = (req, res, next) => {
 
                 // Send the email
                 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-                const origin = (!req.headers.origin.includes('localhost') ? 'https://' : '') + req.headers.origin;
-                const confirmationLink = `${origin}/confirmation/${verificationToken.token}`;
+                const confirmationLink = `${req.headers.origin}/confirmation/${verificationToken.token}`;
                 const msg = {
                   to: req.body.email,
-                  from: 'no-reply@jotnow.com',
+                  from: 'no-reply@thejotter.xyz',
                   templateId: 'd-7de56d53dca542ee9d6f0097ea6dfbba',
                   dynamic_template_data: {
                     confirmationLink: confirmationLink
